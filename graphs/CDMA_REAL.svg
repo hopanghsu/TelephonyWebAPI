@@ -1,0 +1,66 @@
+digraph finite_state_machine {
+
+  // Graphic Setting
+  overlap = scale;
+  node [shape = doublecircle]; " " "  " "   " "    ";
+  node [shape = circle];
+  rankdir = LR;
+
+  // =============================== Single Call ===============================
+
+  // Empty
+  " " -> "[Incoming]" [label = "B_Dial"];
+  " " -> "[Dialing]"  [label = "A_Dial"];
+
+  // Dialing
+  "[Dialing]" -> "[Active]"   [label = "B_Acknology"];
+  "[Dialing]" -> " "        [label = "A_HangUp, B_Disconnect"];
+
+  // Incoming
+  "[Incoming]" -> "[Active]"  [label = "A_Answer"];
+  "[Incoming]" -> " "       [label = "A_Reject, B_Disconnect"];
+
+  // Active
+  "[Active]" -> " "     [label = "A_HangUp, B_Disconnect"];
+  "[Active]" -> "[Held]"  [label = "A_Flash"];
+
+  // Held
+  "[Held]" -> "[Held, Active(out)]"  [label = "A_Flash_NUM"];
+  "[Held]" -> "[Active]"             [label = "A_Flash"];
+  "[Held]" -> "  "                   [label = "A_HangUp, B_Disconnect"];
+
+  // ============================== Call Waiting ===============================
+
+  "[Active]" -> "[Active, Waiting]" [label = "C_Dial"];
+
+  // CW Notification
+  "[Active, Waiting]" -> "[Held, Active]" [label = "A_Flash, A_Flash_NUM"];
+  "[Active, Waiting]" -> "   "            [label = "A_HangUp, B_Disconnect"];
+  "[Active, Waiting]" -> "[Active]"       [label = "C_Disconnect"];
+
+  // CW
+  "[Held, Active]" -> "[Active, Held]"  [label = "A_Flash, A_Flash_NUM"];
+  "[Held, Active]" -> "   "                             [label = "A_HangUp"];
+  "[Held, Active]" -> "[Active]"                        [label = "B_Disconnect, C_Disconnect"];
+
+  "[Active, Held]" -> "[Held, Active]"  [label = "A_Flash, A_Flash_NUM"];
+  "[Active, Held]" -> "   "                             [label = "A_HangUp"];
+  "[Active, Held]" -> "[Active]"                        [label = "B_Disconnect, C_Disconnect"];
+
+  // ============================= Three Way Call ==============================
+
+  // "[Held]" -> "[Held, Active(out)]" [label = "A_Flash_NUM"]; Disabled!!!
+  "[Active]" -> "[Held, Active(out)]"  [label = "A_Flash_NUM"];
+
+  // H2 - "[Held, Active(out)"
+  "[Held, Active(out)]" -> "[Active, Active]"      [label = "A_Flash, A_Flash_NUM"];
+  "[Held, Active(out)]" -> "    "       [label = "A_HangUp"]; // Recall the held party
+  "[Held, Active(out)]" -> "[Held, Active(out)]"      [label = "C_Answer"];
+  "[Held, Active(out)]" -> "[Active]"  [label = "B_Disconnect, C_Disconnect"];
+
+  // 3W - "[Active, Dialing" A_Flash(not implemented), A_Flash_NUM(not implemented),
+  "[Active, Active]" -> "[Active]"          [label = "\nB_Disconnect, C_Disconnect"];
+  "[Active, Active]" -> "    "              [label = "A_HangUp"];
+  "[Active, Active]" -> "[Active, Active]"  [label = "C_Answer"];
+}
+

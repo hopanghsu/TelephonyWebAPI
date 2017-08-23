@@ -1,0 +1,121 @@
+digraph finite_state_machine {
+
+  // Graphic Setting
+  overlap = scale;
+  node [shape = box];
+
+  // node [shape = doublecircle]; " " "  " "   " "    ";
+  // node [shape = ellipse];
+  rankdir = LR;
+
+  // Since CD is not controllable on our side, we have to take CD into concern in every state.
+
+
+  "[Active]" -> "[Held]"                                [label = "F "];
+    // "[Held]" -> "[Active]"                           [label = "F "];
+    // "[Held]" -> "[Held, Active(out)],\n[Active]"     [label = "NF"];
+    // CD is banned by operator
+
+
+  // This state is added by ourselves, so it doesn't have to take care of F and NF
+  "[Active]" -> "(NEW)\n[Active, Waiting],\n[Active]"   [label = "CD"];
+
+    // "(NEW)\n[Active, Waiting],\n[Active]" -> "(NEW)\n[Active, Waiting],\n[Active]"      [label = "CD"];
+
+    // ANSWERED !!!
+    "(NEW)\n[Active, Waiting],\n[Active]" -> "[Active],\n[Held, Active],\n[Held]" [label = "A_Answer"];
+
+    // REJECTED !!!
+    "(NEW)\n[Active, Waiting],\n[Active]" -> "[Active, Waiting],\n[Active]" [label = "A_Reject"];
+
+  // THREE WAY CALL
+  "[Active]" -> "[Active],\n[Held, Active(out)]"  [label = "NF"];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// "[Held]" -> "(NEW)\n[Active, Waiting],\n[Active]" [label = "CD"];
+"[Held]" -> "[Active],\n[Held, Active(out)]" [label = "NF"];
+"[Held]" -> "[Active]" [label = "F"];
+
+// "[Active],\n[Held, Active],\n[Held]" -> "(NEW)\n[Active, Waiting],\n[Active]" [label = "CD"];
+"[Active],\n[Held, Active],\n[Held]" -> "[Active, Held],\n[Active],\n[Held, Active(out)]" [label = "NF"];
+"[Active],\n[Held, Active],\n[Held]" -> "[Active, Held],\n[Active],\n[Held]" [label = "F"];
+
+// "[Active, Waiting],\n[Active]" -> "(NEW)\n[Active, Waiting],\n[Active]" [label = "CD"];
+"[Active, Waiting],\n[Active]" -> "[Active],\n[Held, Active(out)],\n[Held, Active]" [label = "NF"];
+"[Active, Waiting],\n[Active]" -> "[Active],\n[Held, Active],\n[Held]" [label = "F"];
+
+// "[Active],\n[Held, Active(out)]" -> "(NEW)\n[Active, Waiting],\n[Active]" [label = "CD"];
+"[Active],\n[Held, Active(out)]" -> "[Active, Active],\n[Active],\n[Held, Active(out)]" [label = "NF"];
+"[Active],\n[Held, Active(out)]" -> "[Active, Active],\n[Active],\n[Held]" [label = "F"];
+
+// "[Active]" -> "(NEW)\n[Active, Waiting],\n[Active]" [label = "CD"];
+"[Active]" -> "[Active],\n[Held, Active(out)]" [label = "NF"];
+"[Active]" -> "[Held]" [label = "F"];
+
+// "[Active, Held],\n[Active],\n[Held, Active(out)]" -> "(NEW)\n[Active, Waiting],\n[Active]" [label = "CD"];
+"[Active, Held],\n[Active],\n[Held, Active(out)]" -> "[Active, Active],\n[Active],\n[Held, Active(out)],\n[Held, Active]" [label = "NF"];
+"[Active, Held],\n[Active],\n[Held, Active(out)]" -> "[Active, Active],\n[Active],\n[Held, Active],\n[Held]" [label = "F"];
+
+// "[Active, Held],\n[Active],\n[Held]" -> "(NEW)\n[Active, Waiting],\n[Active]" [label = "CD"];
+"[Active, Held],\n[Active],\n[Held]" -> "[Active],\n[Held, Active(out)],\n[Held, Active]" [label = "NF"];
+"[Active, Held],\n[Active],\n[Held]" -> "[Active],\n[Held, Active],\n[Held]" [label = "F"];
+
+// "[Active],\n[Held, Active(out)],\n[Held, Active]" -> "(NEW)\n[Active, Waiting],\n[Active]" [label = "CD"];
+"[Active],\n[Held, Active(out)],\n[Held, Active]" -> "[Active, Active],\n[Active, Held],\n[Active],\n[Held, Active(out)]" [label = "NF"];
+"[Active],\n[Held, Active(out)],\n[Held, Active]" -> "[Active, Active],\n[Active, Held],\n[Active],\n[Held]" [label = "F"];
+
+// "[Active, Active],\n[Active],\n[Held, Active(out)]" -> "(NEW)\n[Active, Waiting],\n[Active]" [label = "CD"];
+"[Active, Active],\n[Active],\n[Held, Active(out)]" -> "[Active, Active],\n[Active],\n[Held, Active(out)]" [label = "NF"];
+"[Active, Active],\n[Active],\n[Held, Active(out)]" -> "[Active, Active],\n[Active],\n[Held]" [label = "F"];
+
+// "[Active, Active],\n[Active],\n[Held]" -> "(NEW)\n[Active, Waiting],\n[Active]" [label = "CD"];
+"[Active, Active],\n[Active],\n[Held]" -> "[Active, Active],\n[Active],\n[Held, Active(out)]" [label = "NF"];
+"[Active, Active],\n[Active],\n[Held]" -> "[Active, Active],\n[Active],\n[Held]" [label = "F"];
+
+// "[Active, Active],\n[Active],\n[Held, Active(out)],\n[Held, Active]" -> "(NEW)\n[Active, Waiting],\n[Active]" [label = "CD"];
+"[Active, Active],\n[Active],\n[Held, Active(out)],\n[Held, Active]" -> "[Active, Active],\n[Active, Held],\n[Active],\n[Held, Active(out)]" [label = "NF"];
+"[Active, Active],\n[Active],\n[Held, Active(out)],\n[Held, Active]" -> "[Active, Active],\n[Active, Held],\n[Active],\n[Held]" [label = "F"];
+
+// "[Active, Active],\n[Active],\n[Held, Active],\n[Held]" -> "(NEW)\n[Active, Waiting],\n[Active]" [label = "CD"];
+"[Active, Active],\n[Active],\n[Held, Active],\n[Held]" -> "[Active, Active],\n[Active, Held],\n[Active],\n[Held, Active(out)]" [label = "NF"];
+"[Active, Active],\n[Active],\n[Held, Active],\n[Held]" -> "[Active, Active],\n[Active, Held],\n[Active],\n[Held]" [label = "F"];
+
+// "[Active, Active],\n[Active, Held],\n[Active],\n[Held, Active(out)]" -> "(NEW)\n[Active, Waiting],\n[Active]" [label = "CD"];
+"[Active, Active],\n[Active, Held],\n[Active],\n[Held, Active(out)]" -> "[Active, Active],\n[Active],\n[Held, Active(out)],\n[Held, Active]" [label = "NF"];
+"[Active, Active],\n[Active, Held],\n[Active],\n[Held, Active(out)]" -> "[Active, Active],\n[Active],\n[Held, Active],\n[Held]" [label = "F"];
+
+// "[Active, Active],\n[Active, Held],\n[Active],\n[Held]" -> "(NEW)\n[Active, Waiting],\n[Active]" [label = "CD"];
+"[Active, Active],\n[Active, Held],\n[Active],\n[Held]" -> "[Active, Active],\n[Active],\n[Held, Active(out)],\n[Held, Active]" [label = "NF"];
+"[Active, Active],\n[Active, Held],\n[Active],\n[Held]" -> "[Active, Active],\n[Active],\n[Held, Active],\n[Held]" [label = "F"];
+
+}

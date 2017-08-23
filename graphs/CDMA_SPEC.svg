@@ -1,0 +1,52 @@
+digraph finite_state_machine {
+
+  // Graphic Setting
+  overlap = scale;
+  node [shape = doublecircle]; "[ ]";
+  node [shape = ellipse];
+  rankdir = LR;
+
+  // Empty
+  "[ ]" -> "[Incoming]" [label = "B_Dial"];
+  "[ ]" -> "[Dialing]"  [label = "A_Dial"];
+
+  // Dialing
+  "[Dialing]" -> "[Active]"   [label = "B_Acknology"];
+  "[Dialing]" -> "[ ]"        [label = "A_HangUp,\nB_Disconnect"];
+
+  // Incoming
+  "[Incoming]" -> "[Active]"  [label = "A_Answer"];
+  "[Incoming]" -> "[ ]"       [label = "A_Reject,\nB_Disconnect"];
+
+  // Active
+  "[Active]" -> "[ ]"               [label = "A_HangUp,\nB_Disconnect"];
+  "[Active]" -> "[CW Notification]" [label = "C_Dial"];       // CDMA CallWaiting
+  "[Active]" -> "[Adding]"          [label = "A_Flash"];      // CDMA ThreeWayCall
+  "[Active]" -> "[H2]"              [label = "A_Flash_NUM"];  // CDMA ThreeWayCall
+
+  // CW Notification
+  "[CW Notification]" -> "[CW]"     [label = "A_Flash,\nA_Flash_NUM"];
+  "[CW Notification]" -> "[ ]"      [label = "A_HangUp,\nB_Disconnect"];
+  "[CW Notification]" -> "[Active]" [label = "C_Disconnect"];
+
+  // CW
+  "[CW]" -> "[CW]"      [label = "A_Flash,\nA_Flash_NUM"];
+  "[CW]" -> "[ ]"       [label = "A_HangUp"];
+  "[CW]" -> "[Active]"  [label = "B_Disconnect,\nC_Disconnect"];
+
+  // Adding
+  "[Adding]" -> "[Active]"  [label = "A_Flash"];
+  "[Adding]" -> "[ ]"       [label = "A_HangUp,\nB_Disconnect"];
+  "[Adding]" -> "[H2]"      [label = "A_Flash_NUM"];
+
+  // H2 - "[Held,\nActive(OUT)"
+  "[H2]" -> "[3W]"      [label = "A_Flash,\nA_Flash_NUM"];
+  "[H2]" -> "[ ]"       [label = "A_HangUp"]; // Recall the held party
+  "[H2]" -> "[H2]"      [label = "C_Answer"];
+  "[H2]" -> "[Active]"  [label = "B_Disconnect,\nC_Disconnect"];
+
+  // 3W - "[Active,\nDialing"
+  "[3W]" -> "[Active]"  [label = "A_Flash(optional),\nA_Flash_NUM(optional),\nB_Disconnect,\nC_Disconnect"];
+  "[3W]" -> "[ ]"       [label = "A_HangUp"];
+  "[3W]" -> "[3W]"      [label = "C_Answer"];
+}
